@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import {Button, Card, CardBody, Col, Row} from 'reactstrap';
+import {Button, Card, CardBody, Col, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row} from 'reactstrap';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -42,28 +42,37 @@ function getSorting(order, orderBy) {
 }
 
 export default class MatTable extends PureComponent {
-  state = {
-    order: 'asc',
-    orderBy: 'calories',
-    selected: new Map([]),
-    data: [
-      createData(800, 750, 'Eclair', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-20'),
-      createData(800, 750, 'Ivan', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-21'),
-      createData(800, 750, 'Dmitry', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-11'),
-      createData(800, 750, 'Maksym', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-23'),
-      createData(800, 750, 'Talas', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-09'),
-      createData(800, 750, 'Andrey', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-15'),
-      createData(800, 750, 'Alex', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-24'),
-      createData(800, 750, 'Dzmitry', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-26'),
-      createData(800, 750, 'Erik', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-30'),
-      createData(800, 750, 'Anton', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-11'),
-      createData(800, 750, 'Antoni', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-05'),
-      createData(800, 750, 'Pavel', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-03'),
-      createData(800, 750, 'Michal', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-01'),
-    ],
-    page: 0,
-    rowsPerPage: 5,
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      order: 'asc',
+      orderBy: 'calories',
+      selected: new Map([]),
+      data: [
+        createData(800, 750, 'Eclair', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-20'),
+        createData(800, 750, 'Ivan', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-21'),
+        createData(800, 750, 'Dmitry', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-11'),
+        createData(800, 750, 'Maksym', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-23'),
+        createData(800, 750, 'Talas', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-09'),
+        createData(800, 750, 'Andrey', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-15'),
+        createData(800, 750, 'Alex', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-24'),
+        createData(800, 750, 'Dzmitry', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-26'),
+        createData(800, 750, 'Erik', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-30'),
+        createData(800, 750, 'Anton', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-11'),
+        createData(800, 750, 'Antoni', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-05'),
+        createData(800, 750, 'Pavel', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-03'),
+        createData(800, 750, 'Michal', 'Paypal - a326178298@outlook.com', 'Wendy', '2020-04-01'),
+      ],
+      page: 0,
+      rowsPerPage: 5,
+      edit: false,
+      delete: false,
+    };
+
+    this.toggleEdit = this.toggleEdit.bind(this);
+    this.toggleDelete = this.toggleDelete.bind(this);
+  }
 
   handleRequestSort = (event, property) => {
     const orderBy = property;
@@ -124,7 +133,23 @@ export default class MatTable extends PureComponent {
   };
 
   onEdit() {
+    this.toggleEdit();
+  }
 
+  toggleEdit() {
+    this.setState({
+      edit: !this.state.edit,
+    });
+  }
+
+  onDelete() {
+    this.toggleDelete();
+  }
+
+  toggleDelete() {
+    this.setState({
+      delete: !this.state.delete,
+    });
   }
 
   render() {
@@ -135,6 +160,39 @@ export default class MatTable extends PureComponent {
 
     return (
       <Col md={12} lg={12}>
+        <Modal isOpen={this.state.edit} toggle={this.toggleEdit}
+               className='modal-success'>
+          <ModalHeader toggle={this.toggleEdit}>Edit</ModalHeader>
+          <ModalBody>
+            <Col>
+              <Label>Amount*</Label>
+              <Input type="text"></Input>
+              <Label>Name*</Label>
+              <Input type="text"></Input>
+              <Label>Payment Address*</Label>
+              <Input type="text"></Input>
+              <Label>Date*</Label>
+              <Input type="date"></Input>
+            </Col>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="success" onClick={this.toggleEdit}>Edit</Button>
+            <Button color="secondary" onClick={this.toggleEdit}>Cancel</Button>
+          </ModalFooter>
+        </Modal>
+        <Modal isOpen={this.state.delete} toggle={this.toggleDelete}
+               className='modal-danger'>
+          <ModalHeader toggle={this.toggleDelete}>Delete</ModalHeader>
+          <ModalBody>
+            <Col>
+              <Label>Are you sure you want to delete?</Label>
+            </Col>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="danger" onClick={this.toggleDelete}>Delete</Button>
+            <Button color="secondary" onClick={this.toggleDelete}>Cancel</Button>
+          </ModalFooter>
+        </Modal>
         <Card>
           <CardBody>
             <div className="material-table__wrap">
@@ -163,9 +221,6 @@ export default class MatTable extends PureComponent {
                           key={d.id}
                           selected={isSelected}
                         >
-                          <TableCell className="material-table__cell" padding="checkbox">
-                            <Checkbox checked={isSelected} className="material-table__checkbox" />
-                          </TableCell>
                           <TableCell
                             className="material-table__cell material-table__cell-right material-text-align"
                             component="th"
@@ -210,7 +265,7 @@ export default class MatTable extends PureComponent {
                                 <Button color="success" id={d.id}><i className="fa fa-edit" onClick={() => this.onEdit()}></i></Button>
                               </Col>
                               <Col>
-                                <Button color="danger" id={d.id}><i className="fa fa-eraser"></i></Button>
+                                <Button color="danger" id={d.id}><i className="fa fa-eraser" onClick={() => this.onDelete()}></i></Button>
                               </Col>
                             </Row>
                           </TableCell>

@@ -56,14 +56,6 @@ class MatTableHead extends PureComponent {
     return (
       <TableHead>
         <TableRow>
-          <TableCell padding="checkbox">
-            <Checkbox
-              className={`material-table__checkbox ${numSelected === rowCount && 'material-table__checkbox--checked'}`}
-              indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={numSelected === rowCount}
-              onChange={onSelectAllClick}
-            />
-          </TableCell>
           {rows.map(row => (
             <TableCell
               className="material-table__cell material-table__cell--sort material-table__cell-right material-text-align"
